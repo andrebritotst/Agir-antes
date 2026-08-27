@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agir Antes — Registro de Prevenção</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Expanded:wght@600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  :root{
+    --bg: #EEF2ED;
+    --panel: #FFFFFF;
+    --ink: #16262A;
+    --ink-soft: #4C5D5C;
+    --line: #CBD5CE;
+    --petrol: #143138;
+    --petrol-2: #1C4550;
+    --amber: #D98E04;
+    --amber-bg: #FBF0DA;
+    --green: #2E7A52;
+    --green-bg: #E4F1E9;
+    --vinho: #7A2333;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:'Archivo Expanded',sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  header{
+    background:var(--petrol);
+    color:#EFF4F0;
+    padding:30px 20px 24px;
+    position:relative;
+    overflow:hidden;
+  }
+  header::after{
+    content:"";
+    position:absolute;
+    right:-40px;top:-40px;
+    width:180px;height:180px;
+    border:2px solid rgba(255,255,255,0.08);
+    border-radius:50%;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#9FC6B8;
+    margin-bottom:6px;
+  }
+  h1{
+    font-size:30px;
+    margin:0 0 6px;
+    letter-spacing:-.01em;
+  }
+  header p{
+    text-align:justify;
+    text-justify:inter-word;
+    margin:0;
+    color:#C7D6CF;
+    font-size:15px;
+    max-width:520px;
+    line-height:1.5;
+  }
+
+  nav{
+    display:flex;
+    background-color:#143138;
+    border-top:1px solid rgba(255,255,255,0.15);
+    position:relative;
+    z-index:10;
+  }
+  nav button{
+    flex:1;
+    background:none;
+    border:none;
+    color:rgba(255,255,255,0.85);
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    padding:15px 8px;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    transition:all .15s ease;
+  }
+  nav button.active{
+    color:#fff;
+    border-bottom-color:var(--amber);
+    background:rgba(255,255,255,0.04);
+  }
+
+  main{
+    max-width:680px;
+    margin:0 auto;
+    padding:20px 16px 70px;
+  }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:16px;
+  }
+
+  label{
+    display:block;
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin:16px 0 6px;
+  }
+  label:first-of-type{margin-top:0;}
+  .hint{
+    font-size:12.5px;
+    color:#7A8B89;
+    font-weight:400;
+    margin-top:2px;
+    text-align:justify;
+    text-justify:inter-word;
+  }
+  .obr{
+    color:var(--vinho);
+    font-weight:700;
+    font-size:13px;
+  }
+  input, select, textarea{
+    width:100%;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px 13px;
+    font-family:'Inter',sans-serif;
+    font-size:15.5px;
+    color:var(--ink);
+    background:#FCFDFC;
+  }
+  textarea{resize:vertical; min-height:70px; line-height:1.5;}
+  input:focus, select:focus, textarea:focus{
+    outline:2px solid var(--petrol-2);
+    outline-offset:1px;
+  }
+  input[type="file"]{
+    display:none;
+  }
+  .foto-input-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:4px;
+  }
+  .btn-foto-escolher{
+    background:var(--petrol);
+    color:#fff;
+    padding:14px 20px;
+    border-radius:9px;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+    white-space:nowrap;
+    flex-shrink:0;
+    text-align:center;
+  }
+  .btn-foto-escolher:active{background:var(--petrol-2);}
+  .foto-input-status{
+    font-size:13px;
+    color:var(--ink-soft);
+    font-weight:500;
+  }
+  .foto-input-status.ok{color:var(--green); font-weight:700;}
+
+  .row2{display:none;}
+
+  .btn-toggle-group{display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px;}
+  .btn-toggle{
+    padding:14px 10px;
+    border:1.5px solid var(--line);
+    border-radius:9px;
+    background:#FCFDFC;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    text-align:center;
+    transition:all .12s ease;
+  }
+  .btn-toggle.selected{
+    background:var(--petrol);
+    color:#fff;
+    border-color:var(--petrol);
+  }
+  .btn-toggle:active{transform:scale(0.98);}
+
+  .btn-primary{
+    width:100%;
+    margin-top:22px;
+    background:var(--petrol);
+    color:#fff;
+    border:none;
+    border-radius:9px;
+    padding:15px;
+    font-weight:700;
+    font-size:16px;
+    cursor:pointer;
+  }
+  .btn-primary:active{background:var(--petrol-2);}
+  .btn-ghost{
+    background:none;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    padding:10px 14px;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    cursor:pointer;
+    width:100%;
+  }
+  .btn-ghost.zip{
+    background:var(--petrol);
+    color:#fff;
+    border-color:var(--petrol);
+    margin-bottom:10px;
+  }
+
+  .kpis{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;}
+  .kpi{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 15px;
+  }
+  .kpi .num{font-family:'Archivo Expanded'; font-size:32px; line-height:1;}
+  .kpi .lbl{font-size:12.5px; color:var(--ink-soft); margin-top:7px; font-weight:600;}
+  .kpi.hero{grid-column:1/-1; background:var(--petrol); color:#fff; border:none;}
+  .kpi.hero .lbl{color:#B9CFC8;}
+  .kpi.hero .num{color:var(--amber);}
+
+  .breakdown{margin-top:4px;}
+  .bar-row{display:flex; align-items:center; gap:10px; margin:10px 0;}
+  .bar-row .label{width:120px; font-size:13px; color:var(--ink-soft); flex-shrink:0; font-weight:600;}
+  .bar-track{flex:1; height:9px; background:#E7ECE7; border-radius:5px; overflow:hidden;}
+  .bar-fill{height:100%; background:var(--petrol-2); border-radius:5px;}
+  .bar-row .val{width:30px; text-align:right; font-size:13.5px; font-weight:700;}
+
+  .rec{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:12px;
+    position:relative;
+  }
+  .rec-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .rec-date{font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--ink-soft);}
+  .rec-cat{font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); margin-top:2px; font-weight:600;}
+  .stamp{
+    font-family:'IBM Plex Mono';
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.06em;
+    padding:6px 10px;
+    border:1.5px dashed;
+    border-radius:6px;
+    transform:rotate(-4deg);
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .stamp.pend{color:var(--amber); border-color:var(--amber); background:var(--amber-bg);}
+  .stamp.ok{color:var(--green); border-color:var(--green); background:var(--green-bg);}
+  .stamp.vinho{color:var(--vinho); border-color:var(--vinho); background:#F5E6E9; white-space:normal; text-align:center;}
+
+  .foto-duo{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:12px;
+  }
+  .foto-duo.single{grid-template-columns:1fr;}
+  .foto-item{position:relative; border-radius:9px; overflow:hidden; background:#EDF0EC; aspect-ratio:4/3;}
+  .foto-item img{width:100%; height:100%; object-fit:cover; display:block; cursor:pointer;}
+  .foto-tag{
+    position:absolute; top:6px; left:6px;
+    font-family:'IBM Plex Mono'; font-size:10px; font-weight:700; letter-spacing:.05em;
+    background:rgba(20,49,56,0.85); color:#fff; padding:3px 7px; border-radius:5px;
+  }
+
+  .foto-preview{margin-top:8px; display:flex; gap:8px;}
+  .foto-preview img{width:88px; height:66px; object-fit:cover; border-radius:7px; border:1px solid var(--line);}
+  .foto-preview .rm{
+    background:#fff; border:1px solid var(--line); border-radius:6px; padding:4px 8px;
+    font-size:11.5px; cursor:pointer; align-self:flex-start; color:var(--ink-soft);
+  }
+
+  .rec-body{margin-top:10px; font-size:14.5px; line-height:1.55;}
+  .rec-body .k{font-weight:700; color:var(--ink-soft); font-size:12px; text-transform:uppercase; letter-spacing:.03em; display:block; margin-top:10px;}
+  .rec-meta{margin-top:12px; font-size:13px; color:var(--ink-soft); display:flex; gap:16px; flex-wrap:wrap; font-weight:500;}
+
+  .empty{
+    text-align:center;
+    padding:44px 20px;
+    color:var(--ink-soft);
+    font-size:14.5px;
+  }
+  .empty .display{font-size:18px; color:var(--ink); margin-bottom:6px;}
+
+  .toolbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:8px;}
+  .filters{display:flex; gap:6px;}
+  .filters select{width:auto; padding:8px 10px; font-size:13.5px;}
+
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:var(--petrol); color:#fff; padding:12px 20px; border-radius:9px;
+    font-size:14px; font-weight:600; opacity:0; pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    box-shadow:0 6px 18px rgba(0,0,0,0.2);
+    z-index:100; max-width:90%; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
+
+  .notice{
+    text-align:justify;
+    text-justify:inter-word;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    background:#F5F3EA;
+    border:1px solid #E5DFC8;
+    border-radius:8px;
+    padding:11px 13px;
+    margin-bottom:16px;
+    line-height:1.55;
+  }
+
+  .modal-bg{
+    display:none; position:fixed; inset:0; background:rgba(20,30,30,0.5);
+    align-items:flex-end; justify-content:center; z-index:50;
+  }
+  .modal-bg.show{display:flex;}
+  .modal{
+    background:#fff; width:100%; max-width:680px; border-radius:16px 16px 0 0;
+    padding:22px; max-height:85vh; overflow-y:auto;
+  }
+
+  .photo-modal-bg{
+    display:none; position:fixed; inset:0; background:rgba(10,18,20,0.94);
+    align-items:center; justify-content:center; z-index:60; padding:20px; flex-direction:column; gap:14px;
+  }
+  .photo-modal-bg.show{display:flex;}
+  .photo-modal-bg img{max-width:100%; max-height:70vh; border-radius:10px;}
+  .photo-modal-bg .actions{display:flex; gap:10px;}
+  .photo-modal-bg button{
+    border:none; border-radius:8px; padding:11px 18px; font-weight:700; font-size:14px; cursor:pointer;
+  }
+  .photo-modal-bg .dl{background:var(--amber); color:#fff;}
+  .photo-modal-bg .cl{background:rgba(255,255,255,0.15); color:#fff;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">SSMA · Prevenção</div>
+  <h1 class="display">Agir Antes</h1>
+  <p>Registro de situações identificadas e corrigidas antes de virarem ocorrência.</p>
+</header>
+
+<nav>
+  <button class="tab-btn active" data-tab="novo">Novo</button>
+  <button class="tab-btn" data-tab="painel">Painel</button>
+  <button class="tab-btn" data-tab="historico">Histórico</button>
+</nav>
+
+<main>
+
+  <!-- NOVO REGISTRO -->
+  <section id="tab-novo">
+    <div class="notice">Sem registro, a prevenção realizada não existe para quem não estava lá. Registrar não expõe falhas — comprova que agimos antes que elas acontecessem.</div>
+    <div class="card">
+      <label>Data</label>
+      <input type="date" id="f-data">
+
+      <label>Categoria <span class="obr">*</span></label>
+      <div class="btn-toggle-group" id="grupo-categoria">
+        <button type="button" class="btn-toggle" data-value="Condição">Condição insegura</button>
+        <button type="button" class="btn-toggle" data-value="Comportamento">Comportamento inseguro</button>
+        <button type="button" class="btn-toggle" data-value="Quase Acidente">Quase acidente</button>
+        <button type="button" class="btn-toggle" data-value="Boa Prática">Boa prática</button>
+      </div>
+
+      <label id="label-antes">Situação encontrada <span class="obr">*</span>
+        <span class="hint" id="hint-antes">Descreva o risco identificado, sem apontar culpado. Ex: "Cabo elétrico exposto próximo à passagem de pessoas, risco de choque elétrico."</span>
+      </label>
+      <textarea id="f-antes" placeholder="O que foi encontrado e por que representava risco..."></textarea>
+      <div class="hint" id="contador-antes" style="margin-top:5px;">Mínimo 20 caracteres e 4 palavras</div>
+
+      <label id="label-foto-antes">Foto — situação encontrada <span class="hint">Opcional</span></label>
+      <div class="foto-input-row">
+        <label class="btn-foto-escolher" for="f-foto-antes">📷 Escolher foto</label>
+        <span class="foto-input-status" id="status-f-foto-antes">Nenhuma foto selecionada</span>
+      </div>
+      <input type="file" accept="image/*" id="f-foto-antes">
+      <div class="foto-preview" id="preview-antes"></div>
+
+      <div id="bloco-status">
+        <label>Status da ação <span class="obr">*</span></label>
+        <div class="btn-toggle-group" id="grupo-status">
+          <button type="button" class="btn-toggle" data-value="andamento">Em andamento</button>
+          <button type="button" class="btn-toggle" data-value="concluido">Já concluída</button>
+          <button type="button" class="btn-toggle" data-value="aguardando">Aguardando tratativa</button>
+        </div>
+      </div>
+
+      <div id="f-depois-wrap" style="display:none;">
+        <label>O que foi feito / situação corrigida
+          <span class="hint">Ex: "Cabo isolado e sinalizado, área interditada até normalização."</span>
+        </label>
+        <textarea id="f-depois" placeholder="Ação tomada..."></textarea>
+
+        <label>Foto — situação corrigida</label>
+        <div class="foto-input-row">
+          <label class="btn-foto-escolher" for="f-foto-depois">📷 Escolher foto</label>
+          <span class="foto-input-status" id="status-f-foto-depois">Nenhuma foto selecionada</span>
+        </div>
+        <input type="file" accept="image/*" id="f-foto-depois">
+        <div class="foto-preview" id="preview-depois"></div>
+      </div>
+
+      <div id="f-aguardando-wrap" style="display:none;">
+        <label>Reportado para <span class="obr">*</span>
+          <span class="hint">Quem recebeu o aviso e não se prontificou a resolver até o momento.</span>
+        </label>
+        <input type="text" id="f-reportado-para" placeholder="Nome / função de quem foi comunicado">
+
+        <label>Justificativa apresentada <span class="hint">Opcional, se houver</span></label>
+        <textarea id="f-justificativa" placeholder="O que foi dito como motivo para não tratar, se houver..."></textarea>
+      </div>
+
+      <label>Responsável <span class="obr">*</span> <span class="hint">Quem identificou ou corrigiu</span></label>
+      <input type="text" id="f-resp" placeholder="Nome / função">
+
+      <label>Prazo <span class="hint">Se em andamento</span></label>
+      <input type="date" id="f-prazo">
+
+      <label>Local / área <span class="hint">Opcional</span></label>
+      <input type="text" id="f-local" placeholder="Ex: Almoxarifado, frente de obra 2...">
+
+      <button class="btn-primary" id="btn-salvar" onclick="salvarRegistro()">Salvar registro</button>
+    </div>
+  </section>
+
+  <!-- PAINEL -->
+  <section id="tab-painel" style="display:none;">
+    <div class="kpis">
+      <div class="kpi hero">
+        <div class="num" id="kpi-total">0</div>
+        <div class="lbl">situações corrigidas antes de virarem ocorrência</div>
+      </div>
+      <div class="kpi">
+        <div class="num" id="kpi-concluidos">0</div>
+        <div class="lbl">ações concluídas</div>
+      </div>
+      <div class="kpi">
+        <div class="num" id="kpi-andamento">0</div>
+        <div class="lbl">em andamento</div>
+      </div>
+      <div class="kpi">
+        <div class="num" id="kpi-aguardando">0</div>
+        <div class="lbl">aguardando tratativa</div>
+      </div>
+      <div class="kpi" style="grid-column:1/-1;">
+        <div class="num" id="kpi-boaspraticas">0</div>
+        <div class="lbl">boas práticas para replicar</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <label style="margin:0 0 10px;">Por categoria</label>
+      <div class="breakdown" id="breakdown"></div>
+    </div>
+
+    <button class="btn-ghost zip" onclick="exportarApresentacaoCompleta()">🖥️ Exportar slides (JPEG, ZIP) — todos os registros</button>
+    <button class="btn-ghost zip" onclick="exportarFotosZip()">📷 Baixar fotos (ZIP) — prontas para PowerPoint</button>
+    <button class="btn-ghost" onclick="exportarCSV()">Exportar CSV (para planilha / Drive)</button>
+  </section>
+
+  <!-- HISTÓRICO -->
+  <section id="tab-historico" style="display:none;">
+    <div class="toolbar">
+      <div class="filters">
+        <select id="filtro-status" onchange="renderHistorico()">
+          <option value="todos">Todos</option>
+          <option value="andamento">Em andamento</option>
+          <option value="aguardando">Aguardando tratativa</option>
+          <option value="concluido">Concluídos</option>
+        </select>
+        <select id="filtro-cat" onchange="renderHistorico()">
+          <option value="todos">Todas categorias</option>
+          <option value="Condição">Condição</option>
+          <option value="Comportamento">Comportamento</option>
+          <option value="Quase Acidente">Quase acidente</option>
+        </select>
+      </div>
+    </div>
+    <div id="lista-historico"></div>
+  </section>
+
+</main>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <label>Registrar conclusão</label>
+    <textarea id="m-depois" placeholder="O que foi feito para corrigir..."></textarea>
+    <label>Foto — situação corrigida <span class="hint">Opcional</span></label>
+    <div class="foto-input-row">
+      <label class="btn-foto-escolher" for="m-foto-depois">📷 Escolher foto</label>
+      <span class="foto-input-status" id="status-m-foto-depois">Nenhuma foto selecionada</span>
+    </div>
+    <input type="file" accept="image/*" id="m-foto-depois">
+    <div class="foto-preview" id="m-preview-depois"></div>
+    <button class="btn-primary" onclick="concluirRegistro()">Marcar como concluído</button>
+    <button class="btn-ghost" style="margin-top:10px;" onclick="fecharModal()">Cancelar</button>
+  </div>
+</div>
+
+<div class="photo-modal-bg" id="photo-modal">
+  <img id="photo-modal-img" src="">
+  <div class="actions">
+    <button class="dl" onclick="baixarFotoAtual()">Baixar imagem</button>
+    <button class="cl" onclick="fecharFoto()">Fechar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let registros = [];
+let modalId = null;
+let fotoAntesData = null, fotoDepoisData = null, mFotoDepoisData = null;
+let fotoAtualUrl = null, fotoAtualNome = 'foto.jpg';
+
+const MAX_DIM = 1600;
+const JPEG_QUALITY = 0.78;
+
+// ---------- Compressão de imagem ----------
+function comprimirImagem(file){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      img.onload = ()=>{
+        let w = img.width, h = img.height;
+        if(w > h && w > MAX_DIM){ h = Math.round(h * MAX_DIM/w); w = MAX_DIM; }
+        else if(h >= w && h > MAX_DIM){ w = Math.round(w * MAX_DIM/h); h = MAX_DIM; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', JPEG_QUALITY));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function ligarInputFoto(inputId, previewId, setter){
+  const statusEl = document.getElementById('status-'+inputId);
+  document.getElementById(inputId).addEventListener('change', async (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const prev = document.getElementById(previewId);
+    prev.innerHTML = '<span class="hint">Comprimindo...</span>';
+    if(statusEl){ statusEl.textContent = 'Processando...'; statusEl.classList.remove('ok'); }
+    try{
+      const dataUrl = await comprimirImagem(file);
+      setter(dataUrl);
+      prev.innerHTML = `<img src="${dataUrl}"><button class="rm" type="button" data-input="${inputId}" data-prev="${previewId}">Remover</button>`;
+      if(statusEl){ statusEl.textContent = '✓ Foto anexada'; statusEl.classList.add('ok'); }
+      prev.querySelector('.rm').addEventListener('click', ()=>{
+        setter(null);
+        document.getElementById(inputId).value = '';
+        prev.innerHTML = '';
+        if(statusEl){ statusEl.textContent = 'Nenhuma foto selecionada'; statusEl.classList.remove('ok'); }
+      });
+    }catch(err){
+      prev.innerHTML = '';
+      if(statusEl){ statusEl.textContent = 'Nenhuma foto selecionada'; statusEl.classList.remove('ok'); }
+      mostrarToast('Não foi possível processar a imagem.');
+    }
+  });
+}
+ligarInputFoto('f-foto-antes','preview-antes', v=>fotoAntesData=v);
+ligarInputFoto('f-foto-depois','preview-depois', v=>fotoDepoisData=v);
+ligarInputFoto('m-foto-depois','m-preview-depois', v=>mFotoDepoisData=v);
+
+// ---------- Storage: IndexedDB nativo do navegador (funciona offline, sem depender do Claude) ----------
+const DB_NAME = 'agirAntesDB';
+const STORE_NAME = 'registros';
+
+function abrirDB(){
+  return new Promise((resolve, reject)=>{
+    if(!window.indexedDB){ reject(new Error('Este navegador não suporta armazenamento local (IndexedDB).')); return; }
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = ()=>{
+      req.result.createObjectStore(STORE_NAME, { keyPath:'id' });
+    };
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error || new Error('Falha ao abrir o banco local.'));
+  });
+}
+
+async function salvarUm(rec){
+  const db = await abrirDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.objectStore(STORE_NAME).put(rec);
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> reject(tx.error || new Error('Falha ao gravar o registro.'));
+  });
+}
+
+async function carregarTodos(){
+  const db = await abrirDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const req = tx.objectStore(STORE_NAME).getAll();
+    req.onsuccess = ()=> resolve(req.result || []);
+    req.onerror = ()=> reject(req.error || new Error('Falha ao ler os registros.'));
+  });
+}
+
+async function carregar(){
+  try{
+    const todos = await carregarTodos();
+    registros = todos.sort((a,b)=> (b.criadoEm||'').localeCompare(a.criadoEm||''));
+  }catch(e){
+    console.error('Erro ao carregar registros:', e);
+    registros = [];
+    mostrarToast('Erro ao carregar: ' + (e && e.message ? e.message : 'motivo desconhecido'));
+  }
+  renderTudo();
+}
+
+function mostrarToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+// tabs
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    ['novo','painel','historico'].forEach(id=>{
+      document.getElementById('tab-'+id).style.display = (id===btn.dataset.tab)?'block':'none';
+    });
+    if(btn.dataset.tab==='painel') renderPainel();
+    if(btn.dataset.tab==='historico') renderHistorico();
+  });
+});
+
+document.getElementById('f-antes').addEventListener('input', (e)=>{
+  const el = document.getElementById('contador-antes');
+  if(descricaoValida(e.target.value)){
+    el.textContent = '✓ Descrição adequada';
+    el.style.color = '#2E7A52';
+  } else {
+    el.textContent = 'Mínimo 20 caracteres e 4 palavras';
+    el.style.color = '';
+  }
+});
+
+let categoriaSel = null;
+let statusSel = null;
+
+function ligarGrupoToggle(groupId, aoSelecionar){
+  const grupo = document.getElementById(groupId);
+  grupo.querySelectorAll('.btn-toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      grupo.querySelectorAll('.btn-toggle').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      aoSelecionar(btn.dataset.value);
+    });
+  });
+}
+ligarGrupoToggle('grupo-categoria', v=>{
+  categoriaSel = v;
+  const ehBoaPratica = (v === 'Boa Prática');
+  document.getElementById('label-antes').innerHTML = ehBoaPratica
+    ? 'O que é a boa prática <span class="obr">*</span><span class="hint" id="hint-antes">Descreva a prática observada e por que pode servir de exemplo para outro contrato ou área. Ex: "Equipe padronizou o checklist de EPI com etiquetas visuais, reduzindo esquecimentos."</span>'
+    : 'Situação encontrada <span class="obr">*</span><span class="hint" id="hint-antes">Descreva o risco encontrado de forma direta — o quê, onde e por que representa perigo, sem apontar culpado. Ex: "Cabo elétrico exposto perto da passagem de pessoas, risco de choque."</span>';
+  document.getElementById('label-foto-antes').innerHTML = ehBoaPratica
+    ? 'Foto da boa prática <span class="hint">Opcional</span>'
+    : 'Foto — situação encontrada <span class="hint">Opcional</span>';
+  document.getElementById('bloco-status').style.display = ehBoaPratica ? 'none' : 'block';
+  document.getElementById('f-depois-wrap').style.display = 'none';
+  document.getElementById('f-aguardando-wrap').style.display = 'none';
+  if(ehBoaPratica){
+    statusSel = 'concluido'; // boa prática não fica "pendente"
+    document.querySelectorAll('#grupo-status .btn-toggle').forEach(b=>b.classList.remove('selected'));
+  } else {
+    statusSel = null;
+  }
+});
+ligarGrupoToggle('grupo-status', v=>{
+  statusSel = v;
+  document.getElementById('f-depois-wrap').style.display = (v==='concluido') ? 'block' : 'none';
+  document.getElementById('f-aguardando-wrap').style.display = (v==='aguardando') ? 'block' : 'none';
+});
+
+document.getElementById('f-data').valueAsDate = new Date();
+
+async function salvarRegistro(){
+  let data = document.getElementById('f-data').value;
+  if(!data) data = hojeISO();
+  const categoria = categoriaSel;
+  const antes = document.getElementById('f-antes').value.trim();
+  const status = statusSel;
+  const depois = document.getElementById('f-depois').value.trim();
+  const resp = document.getElementById('f-resp').value.trim();
+  const prazo = document.getElementById('f-prazo').value;
+  const local = document.getElementById('f-local').value.trim();
+
+  const reportadoPara = document.getElementById('f-reportado-para').value.trim();
+  const justificativa = document.getElementById('f-justificativa').value.trim();
+
+  if(!categoria){
+    mostrarToast('Selecione a categoria.');
+    return;
+  }
+  if(!descricaoValida(antes)){
+    mostrarToast(categoria==='Boa Prática'
+      ? 'Descreva melhor a boa prática: o que é e por que serve de exemplo (mínimo 20 caracteres, 4 palavras).'
+      : 'Descreva melhor a situação: o quê, onde e por que representa risco (mínimo 20 caracteres, 4 palavras).');
+    return;
+  }
+  if(categoria !== 'Boa Prática'){
+    if(!status){
+      mostrarToast('Selecione o status da ação.');
+      return;
+    }
+    if(status==='concluido' && !acaoValida(depois)){
+      mostrarToast('Descreva o que foi feito para corrigir (mínimo 10 caracteres, 2 palavras) — essa informação aparece no slide.');
+      return;
+    }
+    if(status==='aguardando' && !reportadoPara){
+      mostrarToast('Preencha para quem a situação foi reportada.');
+      return;
+    }
+  }
+  if(!resp){
+    mostrarToast('Preencha o responsável.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-salvar');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+
+  const rec = {
+    id: Date.now()+'-'+Math.random().toString(36).slice(2,7),
+    data, categoria, antes,
+    status: status || 'andamento',
+    depois: status==='concluido' ? depois : '',
+    fotoAntes: fotoAntesData || null,
+    fotoDepois: status==='concluido' ? (fotoDepoisData || null) : null,
+    reportadoPara: status==='aguardando' ? reportadoPara : '',
+    justificativa: status==='aguardando' ? justificativa : '',
+    resp, prazo, local,
+    criadoEm: new Date().toISOString()
+  };
+
+  try{
+    await salvarUm(rec);
+    mostrarToast('Registro salvo.');
+  }catch(e){
+    console.error('Erro ao salvar registro:', e);
+    mostrarToast('Erro ao salvar: ' + (e && e.message ? e.message : 'motivo desconhecido'));
+    btn.disabled = false; btn.textContent = 'Salvar registro';
+    return;
+  }
+
+  // reset form
+  document.getElementById('f-antes').value='';
+  document.getElementById('contador-antes').textContent = 'Mínimo 20 caracteres e 4 palavras';
+  document.getElementById('contador-antes').style.color = '';
+  document.getElementById('f-depois').value='';
+  document.getElementById('f-reportado-para').value='';
+  document.getElementById('f-justificativa').value='';
+  document.getElementById('f-resp').value='';
+  document.getElementById('f-prazo').value='';
+  document.getElementById('f-local').value='';
+  document.getElementById('f-depois-wrap').style.display='none';
+  document.getElementById('f-aguardando-wrap').style.display='none';
+  document.querySelectorAll('#grupo-categoria .btn-toggle, #grupo-status .btn-toggle').forEach(b=>b.classList.remove('selected'));
+  categoriaSel = null; statusSel = null;
+  document.getElementById('label-antes').innerHTML = 'Situação encontrada <span class="obr">*</span><span class="hint" id="hint-antes">Descreva o risco encontrado de forma direta — o quê, onde e por que representa perigo, sem apontar culpado. Ex: "Cabo elétrico exposto perto da passagem de pessoas, risco de choque."</span>';
+  document.getElementById('label-foto-antes').innerHTML = 'Foto — situação encontrada <span class="hint">Opcional</span>';
+  document.getElementById('bloco-status').style.display = 'block';
+  document.getElementById('f-data').valueAsDate = new Date();
+  document.getElementById('f-foto-antes').value='';
+  document.getElementById('f-foto-depois').value='';
+  document.getElementById('preview-antes').innerHTML='';
+  document.getElementById('preview-depois').innerHTML='';
+  document.getElementById('status-f-foto-antes').textContent = 'Nenhuma foto selecionada';
+  document.getElementById('status-f-foto-antes').classList.remove('ok');
+  document.getElementById('status-f-foto-depois').textContent = 'Nenhuma foto selecionada';
+  document.getElementById('status-f-foto-depois').classList.remove('ok');
+  fotoAntesData = null; fotoDepoisData = null;
+
+  btn.disabled = false; btn.textContent = 'Salvar registro';
+
+  await carregar();
+}
+
+function abrirModal(id){
+  modalId = id;
+  document.getElementById('m-depois').value='';
+  document.getElementById('m-foto-depois').value='';
+  document.getElementById('m-preview-depois').innerHTML='';
+  document.getElementById('status-m-foto-depois').textContent = 'Nenhuma foto selecionada';
+  document.getElementById('status-m-foto-depois').classList.remove('ok');
+  mFotoDepoisData = null;
+  document.getElementById('modal-bg').classList.add('show');
+}
+function fecharModal(){
+  document.getElementById('modal-bg').classList.remove('show');
+  modalId = null;
+}
+async function concluirRegistro(){
+  const depois = document.getElementById('m-depois').value.trim();
+  if(!acaoValida(depois)){ mostrarToast('Descreva o que foi feito para corrigir (mínimo 10 caracteres, 2 palavras).'); return; }
+  const rec = registros.find(r=>r.id===modalId);
+  if(rec){
+    rec.status = 'concluido';
+    rec.depois = depois;
+    if(mFotoDepoisData) rec.fotoDepois = mFotoDepoisData;
+    await salvarUm(rec);
+  }
+  fecharModal();
+  await carregar();
+  mostrarToast('Registro concluído.');
+}
+
+function renderTudo(){
+  renderPainel();
+  renderHistorico();
+}
+
+function renderPainel(){
+  const prevencao = registros.filter(r=>r.categoria!=='Boa Prática');
+  const boasPraticas = registros.filter(r=>r.categoria==='Boa Prática');
+  const total = prevencao.length;
+  const concluidos = prevencao.filter(r=>r.status==='concluido').length;
+  const aguardando = prevencao.filter(r=>r.status==='aguardando').length;
+  const andamento = total - concluidos - aguardando;
+
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-concluidos').textContent = concluidos;
+  document.getElementById('kpi-andamento').textContent = andamento;
+  document.getElementById('kpi-aguardando').textContent = aguardando;
+  document.getElementById('kpi-boaspraticas').textContent = boasPraticas.length;
+
+  const cond = registros.filter(r=>r.categoria==='Condição').length;
+  const comp = registros.filter(r=>r.categoria==='Comportamento').length;
+  const quase = registros.filter(r=>r.categoria==='Quase Acidente').length;
+  const max = Math.max(cond, comp, quase, 1);
+
+  document.getElementById('breakdown').innerHTML = `
+    <div class="bar-row">
+      <div class="label">Condição</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(cond/max*100)}%"></div></div>
+      <div class="val">${cond}</div>
+    </div>
+    <div class="bar-row">
+      <div class="label">Comportamento</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(comp/max*100)}%"></div></div>
+      <div class="val">${comp}</div>
+    </div>
+    <div class="bar-row">
+      <div class="label">Quase acidente</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(quase/max*100)}%"></div></div>
+      <div class="val">${quase}</div>
+    </div>
+  `;
+}
+
+function renderHistorico(){
+  const fStatus = document.getElementById('filtro-status').value;
+  const fCat = document.getElementById('filtro-cat').value;
+  const lista = document.getElementById('lista-historico');
+
+  let filtrados = registros.filter(r=>{
+    if(fStatus!=='todos' && r.status!==fStatus) return false;
+    if(fCat!=='todos' && r.categoria!==fCat) return false;
+    return true;
+  });
+
+  if(filtrados.length===0){
+    lista.innerHTML = `<div class="empty"><div class="display">Nada por aqui ainda</div>Registre a primeira situação identificada na aba "Novo".</div>`;
+    return;
+  }
+
+  lista.innerHTML = filtrados.map(r=>{
+    let fotoHtml = '';
+    if(r.fotoAntes || r.fotoDepois){
+      const dupla = (r.fotoAntes && r.fotoDepois);
+      fotoHtml = `<div class="foto-duo ${dupla?'':'single'}">`;
+      if(r.fotoAntes) fotoHtml += `<div class="foto-item"><span class="foto-tag">ANTES</span><img src="${r.fotoAntes}" onclick="abrirFoto('${r.id}','antes')"></div>`;
+      if(r.fotoDepois) fotoHtml += `<div class="foto-item"><span class="foto-tag">DEPOIS</span><img src="${r.fotoDepois}" onclick="abrirFoto('${r.id}','depois')"></div>`;
+      fotoHtml += `</div>`;
+    }
+    return `
+    <div class="rec">
+      <div class="rec-top">
+        <div>
+          <div class="rec-date mono">${formatarData(r.data)}</div>
+          <div class="rec-cat">${categoriaLabel(r.categoria)}${r.local? ' · '+escapeHtml(r.local):''}</div>
+        </div>
+        <div class="stamp ${r.categoria==='Boa Prática' ? 'ok' : (r.status==='concluido'?'ok':(r.status==='aguardando'?'vinho':'pend'))}">${r.categoria==='Boa Prática' ? 'BOA PRÁTICA' : statusLabel(r.status).toUpperCase()}</div>
+      </div>
+      ${fotoHtml}
+      <div class="rec-body">
+        <span class="k">${r.categoria==='Boa Prática' ? 'Boa prática' : 'Situação encontrada'}</span>
+        ${escapeHtml(r.antes)}
+        ${r.depois?`<span class="k">Ação realizada</span>${escapeHtml(r.depois)}`:''}
+        ${r.status==='aguardando' && r.reportadoPara?`<span class="k">Reportado para</span>${escapeHtml(r.reportadoPara)}`:''}
+        ${r.status==='aguardando' && r.justificativa?`<span class="k">Justificativa apresentada</span>${escapeHtml(r.justificativa)}`:''}
+      </div>
+      <div class="rec-meta">
+        <span>Responsável: ${escapeHtml(r.resp)}</span>
+        ${r.prazo && r.status!=='concluido' ? `<span>Prazo: ${formatarData(r.prazo)}</span>`:''}
+      </div>
+      <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+        ${(r.fotoAntes || r.fotoDepois) ? `<button class="btn-ghost" style="width:auto; flex:1;" onclick="exportarImagensRegistro('${r.id}')">Exportar ${(r.fotoAntes && r.fotoDepois)?'imagens':'imagem'}</button>` : ''}
+        <button class="btn-ghost" style="width:auto; flex:1;" onclick="exportarSlideRegistro('${r.id}')">Exportar slide (JPEG)</button>
+        ${r.status!=='concluido' ? `<button class="btn-ghost" style="width:auto; flex:1;" onclick="abrirModal('${r.id}')">Marcar como concluído</button>` : ''}
+      </div>
+    </div>
+  `}).join('');
+}
+
+function hojeISO(){
+  const d = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+
+function descricaoValida(texto){
+  const t = (texto || '').trim();
+  if(t.length < 20) return false;
+  const palavras = t.split(/\s+/).filter(Boolean);
+  if(palavras.length < 4) return false;
+  return true;
+}
+
+function acaoValida(texto){
+  const t = (texto || '').trim();
+  if(t.length < 10) return false;
+  const palavras = t.split(/\s+/).filter(Boolean);
+  if(palavras.length < 2) return false;
+  return true;
+}
+
+function categoriaLabel(v){
+  const mapa = { 'Condição':'Condição insegura', 'Comportamento':'Comportamento inseguro', 'Quase Acidente':'Quase acidente', 'Boa Prática':'Boa prática de SSMA' };
+  return mapa[v] || v;
+}
+
+function statusLabel(v){
+  const mapa = { 'andamento':'Em andamento', 'concluido':'Concluído', 'aguardando':'Aguardando tratativa' };
+  return mapa[v] || v;
+}
+
+function formatarData(iso){
+  if(!iso) return '—';
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+// ---------- Nome de arquivo padronizado: AAAA.MM.DD_situacao_resumida ----------
+function slugify(texto, maxPalavras){
+  if(!texto) return 'registro';
+  let s = texto.normalize('NFD').replace(/[\u0300-\u036f]/g,''); // remove acentos
+  s = s.toLowerCase();
+  s = s.replace(/[^a-z0-9\s-]/g,'');
+  const palavras = s.trim().split(/\s+/).filter(Boolean).slice(0, maxPalavras || 5);
+  return palavras.join('_') || 'registro';
+}
+function nomeBaseArquivo(r){
+  const dataPontos = (r.data || '').split('-').join('.'); // AAAA.MM.DD
+  return `${dataPontos}_${slugify(r.antes)}`;
+}
+function escapeHtml(s){
+  const div = document.createElement('div');
+  div.textContent = s || '';
+  return div.innerHTML;
+}
+
+// ---------- Visualizador de foto (para conferir antes de apresentar) ----------
+function abrirFoto(id, qual){
+  const rec = registros.find(r=>r.id===id);
+  if(!rec) return;
+  const src = qual==='antes' ? rec.fotoAntes : rec.fotoDepois;
+  if(!src) return;
+  fotoAtualUrl = src;
+  fotoAtualNome = `${nomeBaseArquivo(rec)}_${qual}.jpg`;
+  document.getElementById('photo-modal-img').src = src;
+  document.getElementById('photo-modal').classList.add('show');
+}
+function fecharFoto(){
+  document.getElementById('photo-modal').classList.remove('show');
+}
+function baixarFotoAtual(){
+  if(!fotoAtualUrl) return;
+  const a = document.createElement('a');
+  a.href = fotoAtualUrl;
+  a.download = fotoAtualNome;
+  a.click();
+}
+
+// ---------- Slide como imagem JPEG (canvas — não depende de bibliotecas externas) ----------
+const SLIDE_W = 1920, SLIDE_H = 1080;
+const COR = { petrol:'#143138', amber:'#D98E04', green:'#2E7A52', vinho:'#7A2333', ink:'#16262A', inkSoft:'#4C5D5C', line:'#CBD5CE', bg:'#FFFFFF', tag:'#143138' };
+
+function carregarImagem(src){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    img.onload = ()=> resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+function desenharImagemCover(ctx, img, x, y, w, h){
+  const escala = Math.max(w / img.width, h / img.height);
+  const iw = img.width * escala, ih = img.height * escala;
+  const ix = x + (w - iw)/2, iy = y + (h - ih)/2;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
+  ctx.drawImage(img, ix, iy, iw, ih);
+  ctx.restore();
+}
+
+function desenharImagemContida(ctx, img, x, y, w, h){
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
+
+  // fundo: a mesma foto, ampliada, desfocada e escurecida — preenche as laterais sem cortar a foto principal
+  ctx.filter = 'blur(26px) brightness(0.55)';
+  const escalaFundo = Math.max(w / img.width, h / img.height) * 1.15;
+  const fw = img.width * escalaFundo, fh = img.height * escalaFundo;
+  const fx = x + (w - fw)/2, fy = y + (h - fh)/2;
+  ctx.drawImage(img, fx, fy, fw, fh);
+  ctx.filter = 'none';
+
+  ctx.restore();
+
+  // primeiro plano: a foto inteira, nítida, sem cortes
+  const escala = Math.min(w / img.width, h / img.height);
+  const iw = img.width * escala, ih = img.height * escala;
+  const ix = x + (w - iw)/2, iy = y + (h - ih)/2;
+  ctx.drawImage(img, ix, iy, iw, ih);
+}
+
+// Decide entre cortar preenchendo a caixa (fotos já parecidas com paisagem, corte mínimo)
+// ou mostrar a foto inteira (fotos muito diferentes do formato, como retrato — evita cortar o que importa)
+function desenharImagemAdaptativa(ctx, img, x, y, w, h){
+  const proporcaoCaixa = w / h;
+  const proporcaoFoto = img.width / img.height;
+  const diferencaRelativa = Math.abs(proporcaoFoto - proporcaoCaixa) / proporcaoCaixa;
+  if(diferencaRelativa > 0.35){
+    desenharImagemContida(ctx, img, x, y, w, h);
+  } else {
+    desenharImagemCover(ctx, img, x, y, w, h);
+  }
+}
+
+function quebrarTexto(ctx, texto, maxWidth){
+  const palavras = (texto || '').split(/\s+/).filter(Boolean);
+  const linhas = [];
+  let atual = '';
+  palavras.forEach(p=>{
+    const teste = atual ? atual + ' ' + p : p;
+    if(ctx.measureText(teste).width > maxWidth && atual){
+      linhas.push(atual);
+      atual = p;
+    } else {
+      atual = teste;
+    }
+  });
+  if(atual) linhas.push(atual);
+  return linhas;
+}
+
+function desenharBlocoTexto(ctx, titulo, texto, x, y, maxWidth, maxLinhas, fontSize){
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = COR.inkSoft;
+  ctx.font = '700 22px Arial';
+  ctx.fillText(titulo, x, y);
+  y += 38;
+
+  ctx.fillStyle = COR.ink;
+  ctx.font = `400 ${fontSize}px Arial`;
+  let linhas = quebrarTexto(ctx, texto, maxWidth);
+  const lineHeight = Math.round(fontSize * 1.42);
+  if(linhas.length > maxLinhas){
+    linhas = linhas.slice(0, maxLinhas);
+    let ultima = linhas[maxLinhas-1];
+    while(ctx.measureText(ultima + '…').width > maxWidth && ultima.length > 0){
+      ultima = ultima.slice(0, -1);
+    }
+    linhas[maxLinhas-1] = ultima + '…';
+  }
+  linhas.forEach(linha=>{
+    ctx.fillText(linha, x, y);
+    y += lineHeight;
+  });
+  return y;
+}
+
+async function desenharSlide(r){
+  const canvas = document.createElement('canvas');
+  canvas.width = SLIDE_W; canvas.height = SLIDE_H;
+  const ctx = canvas.getContext('2d');
+
+  // fundo
+  ctx.fillStyle = COR.bg;
+  ctx.fillRect(0, 0, SLIDE_W, SLIDE_H);
+
+  // faixa superior
+  const headerH = 150;
+  ctx.fillStyle = COR.petrol;
+  ctx.fillRect(0, 0, SLIDE_W, headerH);
+
+  ctx.fillStyle = '#9FC6B8';
+  ctx.font = '700 22px Arial';
+  ctx.textBaseline = 'top';
+  ctx.fillText('S S M A   ·   P R E V E N Ç Ã O', 60, 40);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '700 46px Arial';
+  const tituloTop = `${formatarData(r.data)}  ·  ${categoriaLabel(r.categoria)}${r.local? '  ·  '+r.local : ''}`;
+  ctx.fillText(tituloTop, 60, 78);
+
+  // carimbo de status
+  const ehBoaPratica = r.categoria === 'Boa Prática';
+  const ehAguardando = r.status === 'aguardando' && !ehBoaPratica;
+  const statusOk = r.status === 'concluido';
+  const corStatus = ehBoaPratica ? COR.green : (ehAguardando ? COR.vinho : (statusOk ? COR.green : COR.amber));
+  const textoStamp = ehBoaPratica ? 'BOA PRÁTICA' : (ehAguardando ? 'AGUARDANDO TRATATIVA' : (statusOk ? 'CONCLUÍDO' : 'EM ANDAMENTO'));
+  ctx.save();
+  ctx.font = '700 24px Arial';
+  const larguraTexto = ctx.measureText(textoStamp).width;
+  const stampW = Math.max(260, larguraTexto + 60), stampH = 74;
+  ctx.translate(1920 - 60 - stampW/2, 75);
+  ctx.rotate(-4 * Math.PI/180);
+  ctx.strokeStyle = corStatus;
+  ctx.lineWidth = 3;
+  ctx.setLineDash([8,6]);
+  ctx.fillStyle = '#FFFFFF';
+  roundRect(ctx, -stampW/2, -stampH/2, stampW, stampH, 10);
+  ctx.fill(); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = corStatus;
+  ctx.font = '700 24px Arial';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(textoStamp, 0, 2);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  ctx.restore();
+
+  const hasAntes = !!r.fotoAntes, hasDepois = !!r.fotoDepois;
+  const margin = 60, gap = 30;
+  let imgY = headerH + 40, imgH = 460;
+
+  if(hasAntes || hasDepois){
+    const colW = (SLIDE_W - margin*2 - gap)/2;
+    if(hasAntes){
+      const img = await carregarImagem(r.fotoAntes);
+      desenharImagemAdaptativa(ctx, img, margin, imgY, colW, imgH);
+      if(!ehBoaPratica) desenharTag(ctx, 'ANTES', margin, imgY);
+    }
+    if(hasDepois){
+      const x2 = hasAntes ? margin + colW + gap : margin;
+      const img = await carregarImagem(r.fotoDepois);
+      desenharImagemAdaptativa(ctx, img, x2, imgY, colW, imgH);
+      if(!ehBoaPratica) desenharTag(ctx, 'DEPOIS', x2, imgY);
+    }
+  }
+
+  let textY = (hasAntes || hasDepois) ? (imgY + imgH + 44) : (imgY + 20);
+  const maxWidth = SLIDE_W - margin*2;
+  const espacoRestante = SLIDE_H - 90 - textY;
+
+  const tituloAntes = ehBoaPratica ? 'BOA PRÁTICA' : 'SITUAÇÃO ENCONTRADA';
+
+  let tituloSecundario = null, textoSecundario = null;
+  if(r.status === 'concluido' && r.depois){
+    tituloSecundario = 'AÇÃO REALIZADA';
+    textoSecundario = r.depois;
+  } else if(ehAguardando){
+    tituloSecundario = 'REPORTADO / JUSTIFICATIVA';
+    textoSecundario = `Reportado para: ${r.reportadoPara || '—'}. ${r.justificativa ? 'Justificativa apresentada: ' + r.justificativa : 'Sem justificativa apresentada até o momento.'}`;
+  }
+
+  if(textoSecundario){
+    const metade = Math.floor(espacoRestante / 2);
+    const maxLinhas1 = Math.max(2, Math.floor((metade - 38) / 38));
+    let y2 = desenharBlocoTexto(ctx, tituloAntes, r.antes, margin, textY, maxWidth, maxLinhas1, 26);
+    textY = Math.max(textY + metade + 10, y2 + 16);
+    const maxLinhas2 = Math.max(2, Math.floor((SLIDE_H - 90 - textY - 38) / 38));
+    desenharBlocoTexto(ctx, tituloSecundario, textoSecundario, margin, textY, maxWidth, maxLinhas2, 26);
+  } else {
+    const maxLinhas1 = Math.max(2, Math.floor((espacoRestante - 38) / 38));
+    desenharBlocoTexto(ctx, tituloAntes, r.antes, margin, textY, maxWidth, maxLinhas1, 26);
+  }
+
+  // rodapé — mesma fonte, tamanho e cor do texto acima, para dar peso de evidência
+  ctx.fillStyle = COR.ink;
+  ctx.font = '400 26px Arial';
+  ctx.textBaseline = 'alphabetic';
+  const rodape = `Responsável: ${r.resp}${(r.prazo && !statusOk) ? '      Prazo: ' + formatarData(r.prazo) : ''}`;
+  ctx.fillText(rodape, margin, SLIDE_H - 34);
+
+  return canvas;
+}
+
+function desenharTag(ctx, texto, x, y){
+  ctx.fillStyle = COR.tag;
+  const w = texto === 'ANTES' ? 130 : 150, h = 48;
+  ctx.fillRect(x, y, w, h);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '700 24px Arial';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(texto, x + w/2, y + h/2 + 1);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+}
+
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r);
+  ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+}
+
+function canvasParaBlob(canvas, qualidade){
+  return new Promise(resolve=> canvas.toBlob(resolve, 'image/jpeg', qualidade || 0.92));
+}
+
+async function exportarSlideRegistro(id){
+  const r = registros.find(x=>x.id===id);
+  if(!r) return;
+  mostrarToast('Gerando slide...');
+  try{
+    const canvas = await desenharSlide(r);
+    const blob = await canvasParaBlob(canvas, 0.92);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${nomeBaseArquivo(r)}.jpg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }catch(e){
+    console.error(e);
+    mostrarToast('Erro ao gerar o slide.');
+  }
+}
+
+async function exportarApresentacaoCompleta(){
+  if(registros.length === 0){
+    mostrarToast('Nenhum registro para exportar ainda.');
+    return;
+  }
+  mostrarToast('Gerando slides...');
+  try{
+    const zip = new JSZip();
+    for(const r of registros){
+      const canvas = await desenharSlide(r);
+      const blob = await canvasParaBlob(canvas, 0.9);
+      zip.file(`${nomeBaseArquivo(r)}.jpg`, blob);
+    }
+    const zipBlob = await zip.generateAsync({type:'blob'});
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'agir-antes-slides.zip';
+    a.click();
+    URL.revokeObjectURL(url);
+    mostrarToast('Slides prontos. Arraste cada JPEG para um slide do PowerPoint.');
+  }catch(e){
+    console.error(e);
+    mostrarToast('Erro ao gerar os slides.');
+  }
+}
+
+// ---------- Exportação de imagens de um registro específico ----------
+async function exportarImagensRegistro(id){
+  const r = registros.find(x=>x.id===id);
+  if(!r) return;
+  const base = nomeBaseArquivo(r);
+
+  if(r.fotoAntes && r.fotoDepois){
+    const zip = new JSZip();
+    zip.file(`${base}_antes.jpg`, r.fotoAntes.split(',')[1], {base64:true});
+    zip.file(`${base}_depois.jpg`, r.fotoDepois.split(',')[1], {base64:true});
+    const blob = await zip.generateAsync({type:'blob'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${base}.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } else {
+    const src = r.fotoAntes || r.fotoDepois;
+    const qual = r.fotoAntes ? 'antes' : 'depois';
+    const a = document.createElement('a');
+    a.href = src;
+    a.download = `${base}_${qual}.jpg`;
+    a.click();
+  }
+}
+
+// ---------- Exportações ----------
+function exportarCSV(){
+  const header = ['Data','Categoria','Situação encontrada','Ação realizada','Status','Reportado para','Justificativa apresentada','Responsável','Prazo','Local'];
+  const rows = registros.map(r=>[
+    formatarData(r.data), categoriaLabel(r.categoria), r.antes, r.depois,
+    statusLabel(r.status), r.reportadoPara, r.justificativa, r.resp, formatarData(r.prazo), r.local
+  ]);
+  const csv = [header, ...rows].map(row=>
+    row.map(cell=>`"${String(cell||'').replace(/"/g,'""')}"`).join(',')
+  ).join('\n');
+  const blob = new Blob(["\ufeff"+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'agir-antes-registros.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function exportarFotosZip(){
+  const comFoto = registros.filter(r=>r.fotoAntes || r.fotoDepois);
+  if(comFoto.length===0){
+    mostrarToast('Nenhuma foto registrada ainda.');
+    return;
+  }
+  mostrarToast('Preparando ZIP...');
+  const zip = new JSZip();
+  comFoto.forEach(r=>{
+    const base = nomeBaseArquivo(r);
+    if(r.fotoAntes){
+      zip.file(`${base}_antes.jpg`, r.fotoAntes.split(',')[1], {base64:true});
+    }
+    if(r.fotoDepois){
+      zip.file(`${base}_depois.jpg`, r.fotoDepois.split(',')[1], {base64:true});
+    }
+  });
+  const blob = await zip.generateAsync({type:'blob'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'agir-antes-fotos.zip';
+  a.click();
+  URL.revokeObjectURL(url);
+  mostrarToast('ZIP pronto. Arraste as fotos direto para o PowerPoint.');
+}
+
+carregar();
+</script>
+
+</body>
+</html>
